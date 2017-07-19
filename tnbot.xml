@@ -1,0 +1,52 @@
+<context>
+    <input pattern="(Привет|здоров) *">
+        <!-- Greet the user if we know his/her name -->
+        <output value="Привет $UserName!" if="full($UserName)"/>
+		
+
+        <!-- Or activate an inner context to ask the user about his/her name -->
+        <context if="empty($UserName)" modal="true"> <!-- We use a modal context, so our bot will recognize any text as the user’s name -->
+            <output value="Привет! Как твое имя?"/>
+
+            <input pattern="$Text">
+                <!-- Store the user’s name in the UserName variable with "user" scope to save it into database -->
+                <var name="UserName" value="$Text" scope="user"/>
+                <output value="Привет, $UserName!"/> <!-- Using the placeholder in output -->
+            </input>
+        </context>
+    </input>
+	
+	<input pattern="* (адрес $Number)">
+	<var name="IP_Number" value="$Number" scope="user"/>
+	</input>
+	<input pattern="* (температура в $Text)">
+	<var name="Zapros" value="Temp(TIN)&#38;&#38;"/>
+	<var name="ZAP" value="&#38;get"/>
+  <get url="http://http://77.50.254.24:25402//$ZAP_$Zapros" var="Temp" scope="user" >
+  <var name="Temp2">  
+   <script>
+      <![CDATA[
+        
+		var newString = $Temp.replace("=", "");
+		var newString = newString.replace("&&", "");
+		var newString = newString.replace('&get_Temp(TIN)', "");
+
+        newString;
+      ]]>
+    </script>
+  </var>
+  
+  
+  
+      <!--<param name="APPID" value="API_KEY"/>
+    <param name="units" value="metric"/>
+    <param name="lat" value="$UserLatitude"/>
+    <param name="lon" value="$UserLongitude"/> -->
+  </get>
+
+  <output value='$Temp2'/>
+  
+  </input>
+	
+	
+</context>
